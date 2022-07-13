@@ -3,6 +3,7 @@ import numpy as np
 import requests
 import json
 import datetime
+import pytz
 
 def getPriceHistory(stock_ticker, dates, freq='daily'):#,periodType='year',period=1,frequencyType='daily',frequency=1):
     start = round(dates[0].timestamp())*1000
@@ -42,8 +43,9 @@ def emma(data,N=14):
 
 def convert_time(array):
     dates = []
+    eastern = pytz.timezone('US/Eastern')
     for i in range(len(array)):
-        dates.append(datetime.datetime.fromtimestamp(array[i] / 1e3))
+        dates.append(eastern.localize(datetime.datetime.fromtimestamp(array[i] / 1e3)))
     return np.array(dates)
 
 def roll_std(data,k):
