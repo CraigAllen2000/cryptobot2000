@@ -5,5 +5,5 @@ plotly==5.8.2
 requests==2.28.0
 # Required for deployment on Heroku
 gunicorn==20.1.0
-# For finance
-yfinance==0.1.74
+#for trading
+alpaca-trade-api==2.3.0

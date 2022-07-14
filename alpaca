@@ -1,0 +1,28 @@
+import alpaca_trade_api as tradeapi
+import time
+from random import randint
+import numpy as np
+
+
+# Alpaca authentication and connection details
+api_key = 'PKI3HVXTTVMNE31QVFXI'
+api_secret = 'E55gORLlOV9JHZVhOCvshab9G4rQy6ISir7vNFdX'
+base_url = 'https://paper-api.alpaca.markets'
+
+# instantiate REST API
+api = tradeapi.REST(api_key, api_secret, base_url, api_version='v2')
+
+# obtain account information
+#account = api.get_account()
+
+s = 100000
+while s > 5:
+
+    x = randint(0,1)
+    if x > 0:
+        api.submit_order(symbol='BTCUSD', qty=0.1, side='buy', type='market', time_in_force='day')
+        print("bought.")
+    else:
+        api.submit_order(symbol='BTCUSD', qty=0.1, side='sell', type='market', time_in_force='day')
+        print("sold.")
+    time.sleep(60)
