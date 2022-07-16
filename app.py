@@ -153,4 +153,4 @@ def update_output_div(sma_input, ema_input, band_input,n):
     return fig1, fig2
 
 if __name__ == "__main__":
-    app.run_server(debug=False, use_reloader=False)  # Turn off reloader if inside Jupyter
+    app.run_server(debug=False, host='0.0.0.0')  # Turn off reloader if inside Jupyter
