@@ -5,13 +5,13 @@ import json
 import datetime
 import pytz
 
-def getPriceHistory(stock_ticker, dates, freq='daily'):#,periodType='year',period=1,frequencyType='daily',frequency=1):
+def getPriceHistory(stock_ticker, dates, freq='daily', period='year'):#,periodType='year',period=1,frequencyType='daily',frequency=1):
     start = round(dates[0].timestamp())*1000
     end = round(dates[1].timestamp())*1000
     td_consumer_key = '2QG3VO3MTWMSKGS4XCWQJAOSPUT3UR6R'
     endpoint = 'https://api.tdameritrade.com/v1/marketdata/{stock_ticker}/pricehistory?periodType={periodType}&frequencyType={frequencyType}&startDate={startDate}&endDate={endDate}'#periodType={periodType}
     #full_url = endpoint.format(stock_ticker=stock_ticker,periodType=periodType,period=period,frequencyType=frequencyType,frequency=frequency)#,startDate=startDate,endDate=endDate
-    full_url = endpoint.format(stock_ticker=stock_ticker,periodType='year',frequencyType=freq,startDate=start,endDate=end)#periodType='year'
+    full_url = endpoint.format(stock_ticker=stock_ticker,periodType=period,frequencyType=freq,startDate=start,endDate=end)#periodType='year'
     page = requests.get(url=full_url,
                         params={'apikey' : td_consumer_key})
     content = json.loads(page.content)['candles']
@@ -43,9 +43,10 @@ def emma(data,N=14):
 
 def convert_time(array):
     dates = []
-    eastern = pytz.timezone('US/Eastern')
+    #eastern = pytz.timezone('US/Eastern')
     for i in range(len(array)):
-        dates.append(eastern.localize(datetime.datetime.fromtimestamp(array[i] / 1e3)))
+        #dates.append(eastern.localize(datetime.datetime.fromtimestamp(int(array[i]) / 1e3)))
+        dates.append(datetime.datetime.fromtimestamp(int(array[i]) / 1e3))
     return np.array(dates)
 
 def roll_std(data,k):
@@ -225,3 +226,5 @@ def runSimulation(df,Rule,wait_time,capital,bp,sp,prnt=True):
             continue
             
     return trade_log, a1.balance(df['close'][len(df)-1])
+
+print(convert_time([1659006480000]))

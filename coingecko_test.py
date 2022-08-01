@@ -10,8 +10,12 @@ x = requests.get(url)
 X = np.array(convert_time([row[0] for row in x.json()["prices"]]))
 Y = [row[1] for row in x.json()["prices"]]
 
-z = []
-print(len(z))
-z.append(X[-1])
-z.append(X[-2])
-print(z)
+z = """hallo
+this is a test
+spooky {0}
+"""
+
+print(z.format("helooooo"))
+
+x = datetime.datetime(2022,7,18,21,6,23,341).strftime('%Y-%m-%d %H:%M:%S')
+print(x)

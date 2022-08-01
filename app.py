@@ -82,13 +82,21 @@ def update_output_div(sma_input, ema_input, band_input,n):
     global sellsYyy
     global port_times
     global port
+
     now = int(time.time())
     from_time = str(now - 86400)
     to_time = str(now)
-    url = 'https://api.coingecko.com/api/v3/coins/bitcoin/market_chart/range?vs_currency=usd&from='+from_time+'&to='+to_time
-    p = requests.get(url)
-    X = np.array(convert_time([row[0] for row in p.json()["prices"]]))
-    Y = np.array([row[1] for row in p.json()["prices"]])
+    date_input_start = '7-27-22 9:30'
+    date_input_end = '7-28-22 4:00'
+    start_date = datetime.datetime.strptime(date_input_start, '%m-%d-%y %H:%M')
+    end_date = datetime.datetime.strptime(date_input_end, '%m-%d-%y %H:%M')
+    
+    dates = [start_date, end_date]
+    tick = 'MRK'
+    data, df = getPriceHistory(tick,dates,"minute","day")
+    X = convert_time(df["datetime"])
+    Y = np.array(df["close"])
+
     fig1 = go.Figure()
     fig2 = go.Figure()
     sma_data = sma(Y,20)
@@ -98,8 +106,8 @@ def update_output_div(sma_input, ema_input, band_input,n):
 
     # Add titles
     fig1.update_layout(
-        title='Bitcoin Live Price',
-        yaxis_title='Bitcoin Price (USD)')
+        title=tick+" Live Price",
+        yaxis_title=tick+' Price (USD)')
 
     try:
         if sma_input[0] == 'SMA':
@@ -125,12 +133,12 @@ def update_output_div(sma_input, ema_input, band_input,n):
 
         x = randint(0,1)
         if x > 0:
-            api.submit_order(symbol='BTCUSD', qty=0.1, side='buy', type='market', time_in_force='day')
+            api.submit_order(symbol=tick, qty=1, side='buy', type='market', time_in_force='day')
             buysX.append(X[-1])
             buysYyy.append(Y[-1])
             print("bought.")
         else:
-            api.submit_order(symbol='BTCUSD', qty=0.1, side='sell', type='market', time_in_force='day')
+            api.submit_order(symbol=tick, qty=1, side='sell', type='market', time_in_force='day')
             sellsX.append(X[-1])
             sellsYyy.append(Y[-1])
             print("sold.")
@@ -153,4 +161,4 @@ def update_output_div(sma_input, ema_input, band_input,n):
     return fig1, fig2
 
 if __name__ == "__main__":
-    app.run_server(debug=False, host='0.0.0.0')  # Turn off reloader if inside Jupyter
+    app.run_server(debug=False, host='0.0.0.0', port=8000)  # Turn off reloader if inside Jupyter
